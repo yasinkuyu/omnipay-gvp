@@ -1,0 +1,45 @@
+{
+    "name": "yasinkuyu/omnipay-gvp",
+    "type": "library",
+    "description": "Gvp (Garanti, Denizbank, TEB, ING, Şekerbank, TFKB) gateway for Omnipay payment processing library",
+    "keywords": [
+        "gvp",
+        "yapıkredi bankası",
+        "sanal pos",
+        "gateway",
+        "merchant",
+        "turkish pos",
+        "turkey pos",
+        "omnipay",
+        "pay",
+        "payment"
+    ],
+    "homepage": "https://github.com/yasinkuyu/omnipay-gvp",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yasin Kuyu",
+            "email": "yasinkuyu@gmail.com"
+        },
+        {
+            "name": "Omnipay Contributors",
+            "homepage": "https://github.com/yasinkuyu/omnipay-gvp/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Omnipay\\Gvp\\": "src/"
+        }
+    },
+    "require": {
+        "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}
