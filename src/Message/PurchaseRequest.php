@@ -16,7 +16,7 @@ class PurchaseRequest extends AbstractRequest {
 
     protected $endpoint = '';
     protected $endpoints = [
-        'test' => 'https://sanalposprov.garanti.com.tr/VPServlet',
+        'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',
         'purchase' => 'https://sanalposprov.garanti.com.tr/VPServlet'
     ];
     protected $currencies = [
@@ -54,12 +54,19 @@ class PurchaseRequest extends AbstractRequest {
 
         $data['Card'] = array(
             'Number' => $this->getCard()->getNumber(),
-            'Expires' => $this->getCard()->getExpiryDate('my'),
-            "Cvv2Val" => $this->getCard()->getCvv()
+            'ExpireDate' => $this->getCard()->getExpiryDate('my'),
+            'CVV2' => $this->getCard()->getCvv()
         );
 
-        $data['Customer']["IPAddress"] = $this->getClientIp();
-        $data['Customer']['Email'] = $this->getCard()->getEmail();
+        $data['Order'] = array(
+            'OrderID' => $this->getOrderId(),
+            'GroupID' => ""
+        );
+
+        $data['Customer'] = array(
+            'IPAddress' => $this->getClientIp(),
+            'EmailAddress' => $this->getCard()->getEmail()
+        );
 
         return $data;
     }
@@ -67,11 +74,11 @@ class PurchaseRequest extends AbstractRequest {
     public function sendData($data) {
 
         // API info
-        $data['Version'] = "v0.01";
+        $data['Version'] = "0.01";
         $data['Mode'] = $this->getTestMode() ? 'TEST' : 'PROD';
 
         $data['Terminal'] = array(
-            'ProvUserID' => $this->getOrderId(),
+            'ProvUserID' => $this->getUserName(),
             'HashData' => $this->getTransactionHash($this->getPassword()),
             'UserID' => $this->getUserName(),
             'ID' => $this->getTerminalId(),
@@ -117,8 +124,6 @@ class PurchaseRequest extends AbstractRequest {
             )
         ));
 
-        echo $document->saveXML();
-        die();
         $httpResponse = $this->httpClient->post($this->endpoint, $headers, $document->saveXML())->send();
 
         return $this->response = new Response($this, $httpResponse->getBody());
@@ -191,6 +196,14 @@ class PurchaseRequest extends AbstractRequest {
 
     public function setRefundPassword($value) {
         return $this->setParameter('refundpassword', $value);
+    }
+
+    public function getSecurekey() {
+        return $this->getParameter('securekey');
+    }
+
+    public function setSecurekey($value) {
+        return $this->setParameter('securekey', $value);
     }
 
     public function getInstallment() {
