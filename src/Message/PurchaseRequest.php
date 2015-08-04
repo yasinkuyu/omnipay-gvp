@@ -80,26 +80,12 @@ class PurchaseRequest extends AbstractRequest {
 
         $document->appendChild($root);
 
-        
-
         // Set money points (maxi puan)
         $extra = $document->createElement('Extra');
         if (!empty($this->getMoneyPoints())) {
             $extra->appendChild($document->createElement('MAXIPUAN', $this->getMoneyPoints()));
             $root->appendChild($extra);
         }
-
-        // Get money points (maxi puan)
-        if (!empty($this->getMoneyPoints())) {
-            $extra->appendChild($document->createElement('MAXIPUANSORGU', 'MAXIPUANSORGU'));
-            $root->appendChild($extra);
-        }
-
-        $billTo = $document->createElement('BillTo');
-        foreach ($dataBill as $id => $value) {
-            $billTo->appendChild($document->createElement($id, $value));
-        }
-        $root->appendChild($billTo);
 
         // Post to Gvp
         $headers = array(
@@ -122,20 +108,12 @@ class PurchaseRequest extends AbstractRequest {
         return $this->response = new Response($this, $httpResponse->getBody());
     }
 
-    public function getBank() {
-        return $this->getParameter('bank');
+    public function getMerchantId() {
+        return $this->getParameter('merchantId');
     }
 
-    public function setBank($value) {
-        return $this->setParameter('bank', $value);
-    }
-
-    public function getUserName() {
-        return $this->getParameter('username');
-    }
-
-    public function setUserName($value) {
-        return $this->setParameter('username', $value);
+    public function setMerchantId($value) {
+        return $this->setParameter('merchantId', $value);
     }
 
     public function getTerminalId() {
@@ -146,12 +124,36 @@ class PurchaseRequest extends AbstractRequest {
         return $this->setParameter('terminalId', $value);
     }
 
+    public function getUserName() {
+        return $this->getParameter('username');
+    }
+
+    public function setUserName($value) {
+        return $this->setParameter('username', $value);
+    }
+
     public function getPassword() {
         return $this->getParameter('password');
     }
 
     public function setPassword($value) {
         return $this->setParameter('password', $value);
+    }
+
+    public function getRefundUserName() {
+        return $this->getParameter('refundusername');
+    }
+
+    public function setRefundUserName($value) {
+        return $this->setParameter('refundusername', $value);
+    }
+
+    public function getRefundPassword() {
+        return $this->getParameter('refundpassword');
+    }
+
+    public function setRefundPassword($value) {
+        return $this->setParameter('refundpassword', $value);
     }
 
     public function getInstallment() {
@@ -177,6 +179,5 @@ class PurchaseRequest extends AbstractRequest {
     public function setOrderId($value) {
         return $this->setParameter('orderid', $value);
     }
-
 
 }
