@@ -19,7 +19,6 @@ class PurchaseRequest extends AbstractRequest {
         'test' => 'https://sanalposprov.garanti.com.tr/VPServlet',
         'purchase' => 'https://sanalposprov.garanti.com.tr/VPServlet'
     ];
-   
     protected $currencies = [
         'TRY' => 949,
         'YTL' => 949,
@@ -36,23 +35,29 @@ class PurchaseRequest extends AbstractRequest {
         $this->validate('amount', 'card');
         $this->getCard()->validate();
         $currency = $this->getCurrency();
-        
-        $data['Terminal']['ProvUserID'] = $this->getOrderId();
-        $data['Terminal']['HashData'] = $this->getTransactionHash($this->getPassword());
-        $data['Terminal']['UserID'] = $this->getUserName();
-        $data['Terminal']['ID'] = $this->getTerminalId();
-        $data['Terminal']['MerchantID'] = $this->getMerchantId();
-        
-        $data['Transaction']['Type'] = $this->getType();
-        $data['Transaction']['CurrencyCode'] = $this->currencies[$currency];
-        $data['Transaction']['InstallmentCnt'] = $this->getInstallment();
-        $data['Transaction']['Amount'] = $this->getAmount();
-        $data['Transaction']['CardholderPresentCode'] = "";
-        
-        $data['Card']['Number'] = $this->getCard()->getNumber();
-        $data['Card']['Expires'] = $this->getCard()->getExpiryDate('my');
-        $data['Card']["Cvv2Val"] = $this->getCard()->getCvv();
-        
+
+        $data['Transaction'] = array(
+            'Type' => $this->getType(),
+            'InstallmentCnt' => $this->getInstallment(),
+            'Amount' => $this->getAmount(),
+            'CurrencyCode' => $this->currencies[$currency],
+            'CardholderPresentCode' => "",
+            'MotoInd' => "",
+            'Description' => "",
+            'OriginalRetrefNum' => "",
+            'CepBank' => array(
+                'GSMNumber' => "",
+                'CepBank' => ""
+            ),
+            'PaymentType' => ""
+        );
+
+        $data['Card'] = array(
+            'Number' => $this->getCard()->getNumber(),
+            'Expires' => $this->getCard()->getExpiryDate('my'),
+            "Cvv2Val" => $this->getCard()->getCvv()
+        );
+
         $data['Customer']["IPAddress"] = $this->getClientIp();
         $data['Customer']['Email'] = $this->getCard()->getEmail();
 
@@ -64,28 +69,37 @@ class PurchaseRequest extends AbstractRequest {
         // API info
         $data['Version'] = "v0.01";
         $data['Mode'] = $this->getTestMode() ? 'TEST' : 'PROD';
-        $data['Name'] = $this->getUserName();
-        $data['MerchantId']['Password'] = $this->getPassword();
+
+        $data['Terminal'] = array(
+            'ProvUserID' => $this->getOrderId(),
+            'HashData' => $this->getTransactionHash($this->getPassword()),
+            'UserID' => $this->getUserName(),
+            'ID' => $this->getTerminalId(),
+            'MerchantID' => $this->getMerchantId(),
+        );
 
         // Build api post url
-        $this->endpoint = $this->getTestMode() == TRUE ? $this->endpoints["test"] :  $this->endpoints["purchase"];
+        $this->endpoint = $this->getTestMode() == TRUE ? $this->endpoints["test"] : $this->endpoints["purchase"];
 
         $document = new DOMDocument('1.0', 'UTF-8');
         $root = $document->createElement('GVPSRequest');
 
-        // Each array element 
-        foreach ($data as $id => $value) {
-            $root->appendChild($document->createElement($id, $value));
-        }
+        // recursive array to xml
+        $xml = function ($root, $data) use ($document, &$xml) {
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $subs = $document->createElement($key);
+                    $root->appendChild($subs);
+                    $xml($subs, $value);
+                } else {
+                    $root->appendChild($document->createElement($key, $value));
+                }
+            }
+        };
+
+        $xml($root, $data);
 
         $document->appendChild($root);
-
-        // Set money points (maxi puan)
-        $extra = $document->createElement('Extra');
-        if (!empty($this->getMoneyPoints())) {
-            $extra->appendChild($document->createElement('MAXIPUAN', $this->getMoneyPoints()));
-            $root->appendChild($extra);
-        }
 
         // Post to Gvp
         $headers = array(
@@ -102,35 +116,35 @@ class PurchaseRequest extends AbstractRequest {
                 'CURLOPT_POST' => 1
             )
         ));
-echo $document->saveXML(); die();
+
+        echo $document->saveXML();
+        die();
         $httpResponse = $this->httpClient->post($this->endpoint, $headers, $document->saveXML())->send();
 
         return $this->response = new Response($this, $httpResponse->getBody());
     }
 
-    private function getSecurityHash($password)
-    {
-        $tidPrefix  = str_repeat('0', 9 - strlen($this->getTerminalId()));
+    private function getSecurityHash($password) {
+        $tidPrefix = str_repeat('0', 9 - strlen($this->getTerminalId()));
         $terminalId = sprintf('%s%s', $tidPrefix, $this->getTerminalId());
         return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
     }
-    
-    private function getTransactionHash($password)
-    {
+
+    /**
+     * 
+     * @param type $password
+     * @return type
+     */
+    private function getTransactionHash($password) {
         return strtoupper(
-            sha1(
-                sprintf(
-                    '%s%s%s%s%s',
-                    $this->getOrderId(),
-                    $this->getTerminalId(),
-                    $this->getCard()->getNumber(),
-                    $this->getAmount(),
-                    $this->getSecurityHash($password)
+                sha1(
+                        sprintf(
+                                '%s%s%s%s%s', $this->getOrderId(), $this->getTerminalId(), $this->getCard()->getNumber(), $this->getAmount(), $this->getSecurityHash($password)
+                        )
                 )
-            )
         );
     }
-    
+
     public function getMerchantId() {
         return $this->getParameter('merchantId');
     }
