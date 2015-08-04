@@ -1,7 +1,7 @@
 {
     "name": "yasinkuyu/omnipay-gvp",
     "type": "library",
-    "description": "Gvp (Garanti, Denizbank, TEB, ING, Şekerbank, TFKB) gateway for Omnipay payment processing library",
+    "description": "Gvp (Garanti, Denizbank, TEB, ING, Şekerbank, TFKB sanal pos) gateway for Omnipay payment processing library",
     "keywords": [
         "gvp",
         "yapıkredi bankası",

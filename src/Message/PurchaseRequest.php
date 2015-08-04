@@ -36,9 +36,9 @@ class PurchaseRequest extends AbstractRequest {
         $this->validate('amount', 'card');
         $this->getCard()->validate();
         $currency = $this->getCurrency();
-
+        
         $data['Terminal']['ProvUserID'] = $this->getOrderId();
-        $data['Terminal']['HashData'] = $this->getOrderId();
+        $data['Terminal']['HashData'] = $this->getTransactionHash($this->getPassword());
         $data['Terminal']['UserID'] = $this->getUserName();
         $data['Terminal']['ID'] = $this->getTerminalId();
         $data['Terminal']['MerchantID'] = $this->getMerchantId();
@@ -108,6 +108,45 @@ class PurchaseRequest extends AbstractRequest {
         return $this->response = new Response($this, $httpResponse->getBody());
     }
 
+    /**
+     * returns security hash for using in transaction hash.
+     *
+     * @param string $password
+     *
+     * @return string
+     */
+    private function getSecurityHash($password)
+    {
+        $tidPrefix  = str_repeat('0', 9 - strlen($this->getTerminalId()));
+        $terminalId = sprintf('%s%s', $tidPrefix, $this->getTerminalId());
+        return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
+    }
+    
+    /**
+     * returns transaction hash for using in transaction request.
+     *
+     * @param Request $request
+     * @param string  $password
+     * @param string $transactionType
+     *
+     * @return string
+     */
+    private function getTransactionHash($password)
+    {
+        return strtoupper(
+            sha1(
+                sprintf(
+                    '%s%s%s%s%s',
+                    $this->getOrderId(),
+                    $this->getTerminalId(),
+                    $this->getCard()->getNumber(),
+                    $this->getAmount(),
+                    $this->getSecurityHash($password)
+                )
+            )
+        );
+    }
+    
     public function getMerchantId() {
         return $this->getParameter('merchantId');
     }
