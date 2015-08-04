@@ -39,17 +39,17 @@ class PurchaseRequest extends AbstractRequest {
         $data['Transaction'] = array(
             'Type' => $this->getType(),
             'InstallmentCnt' => $this->getInstallment(),
-            'Amount' => $this->getAmount(),
+            'Amount' => $this->getAmountInteger(),
             'CurrencyCode' => $this->currencies[$currency],
-            'CardholderPresentCode' => "",
-            'MotoInd' => "",
+            'CardholderPresentCode' => "0",
+            'MotoInd' => "N",
             'Description' => "",
             'OriginalRetrefNum' => "",
             'CepBank' => array(
-                'GSMNumber' => "",
+                'GSMNumber' => $this->getCard()->getBillingPhone(),
                 'CepBank' => ""
             ),
-            'PaymentType' => ""
+            'PaymentType' => "K" // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
         );
 
         $data['Card'] = array(
@@ -64,17 +64,17 @@ class PurchaseRequest extends AbstractRequest {
         );
 
         $data['Customer'] = array(
-            'IPAddress' => $this->getClientIp(),
+            'IPAddress' =>  '127.0.0.1', //$this->getClientIp(),
             'EmailAddress' => $this->getCard()->getEmail()
         );
 
         return $data;
     }
-
+    
     public function sendData($data) {
 
         // API info
-        $data['Version'] = "0.01";
+        $data['Version'] = "v0.01";
         $data['Mode'] = $this->getTestMode() ? 'TEST' : 'PROD';
 
         $data['Terminal'] = array(
@@ -123,7 +123,7 @@ class PurchaseRequest extends AbstractRequest {
                 'CURLOPT_POST' => 1
             )
         ));
-
+        
         $httpResponse = $this->httpClient->post($this->endpoint, $headers, $document->saveXML())->send();
 
         return $this->response = new Response($this, $httpResponse->getBody());
@@ -144,7 +144,12 @@ class PurchaseRequest extends AbstractRequest {
         return strtoupper(
                 sha1(
                         sprintf(
-                                '%s%s%s%s%s', $this->getOrderId(), $this->getTerminalId(), $this->getCard()->getNumber(), $this->getAmount(), $this->getSecurityHash($password)
+                                '%s%s%s%s%s', 
+                                $this->getOrderId(), 
+                                $this->getTerminalId(), 
+                                $this->getCard()->getNumber(), 
+                                $this->getAmountInteger(), 
+                                $this->getSecurityHash($password)
                         )
                 )
         );
