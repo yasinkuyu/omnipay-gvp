@@ -19,10 +19,12 @@ class Gateway extends AbstractGateway {
 
     public function getDefaultParameters() {
         return array(
-            'bank' => '',
-            'username' => '',
-            'clientId' => '',
-            'password' => '',
+            'terminalId' => '',
+            'merchandId' => '',
+            'username' => 'PROVAUT',
+            'password' => '123qweASD',
+            'refundusername' => 'PROVRFN',
+            'refundpassword' => '123qweASD',
             'installment' => '',
             'type' => 'PROD',
             'currency' => 'TRY'
@@ -49,32 +51,12 @@ class Gateway extends AbstractGateway {
         return $this->createRequest('\Omnipay\Gvp\Message\VoidRequest', $parameters);
     }
 
-    public function credit(array $parameters = array()) {
-        return $this->createRequest('\Omnipay\Gvp\Message\CreditRequest', $parameters);
+    public function getMerchantId() {
+        return $this->getParameter('merchantId');
     }
 
-    public function settle(array $parameters = array()) {
-        return $this->createRequest('\Omnipay\Gvp\Message\SettleRequest', $parameters);
-    }
-
-    public function money(array $parameters = array()) {
-        return $this->createRequest('\Omnipay\Gvp\Message\MoneyPointsRequest', $parameters);
-    }
-
-    public function getBank() {
-        return $this->getParameter('bank');
-    }
-
-    public function setBank($value) {
-        return $this->setParameter('bank', $value);
-    }
-
-    public function getUserName() {
-        return $this->getParameter('username');
-    }
-
-    public function setUserName($value) {
-        return $this->setParameter('username', $value);
+    public function setMerchantId($value) {
+        return $this->setParameter('merchantId', $value);
     }
 
     public function getTerminalId() {
@@ -85,12 +67,36 @@ class Gateway extends AbstractGateway {
         return $this->setParameter('terminalId', $value);
     }
 
+    public function getUserName() {
+        return $this->getParameter('username');
+    }
+
+    public function setUserName($value) {
+        return $this->setParameter('username', $value);
+    }
+
     public function getPassword() {
         return $this->getParameter('password');
     }
 
     public function setPassword($value) {
         return $this->setParameter('password', $value);
+    }
+
+    public function getRefundUserName() {
+        return $this->getParameter('refundusername');
+    }
+
+    public function setRefundUserName($value) {
+        return $this->setParameter('refundusername', $value);
+    }
+
+    public function getRefundPassword() {
+        return $this->getParameter('refundpassword');
+    }
+
+    public function setRefundPassword($value) {
+        return $this->setParameter('refundpassword', $value);
     }
 
     public function getInstallment() {
@@ -115,22 +121,6 @@ class Gateway extends AbstractGateway {
 
     public function setOrderId($value) {
         return $this->setParameter('orderid', $value);
-    }
-
-    public function getMoneyPoints() {
-        return $this->getParameter('moneypoints');
-    }
-
-    public function setMoneyPoints($value) {
-        return $this->setParameter('moneypoints', $value);
-    }
-
-    public function getSettlement() {
-        return $this->getParameter('settlement');
-    }
-
-    public function setSettlement($value) {
-        return $this->setParameter('settlement', $value);
     }
 
 }
