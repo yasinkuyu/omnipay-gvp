@@ -13,13 +13,23 @@ class RefundRequest extends PurchaseRequest {
 
     public function getData() {
 
-        $this->validate('orderid', 'amount');
         $currency = $this->getCurrency();
 
-        $data['Type'] = 'Credit';
-        $data['OrderId'] = $this->getOrderId();
-        $data['Currency'] = $this->currencies[$currency];
-        $data['Total'] = $this->getAmount();
+        $data['Transaction'] = array(
+            'Type' => 'refund',
+            'InstallmentCnt' => $this->getInstallment(),
+            'Amount' => $this->getAmountInteger(),
+            'CurrencyCode' => $this->currencies[$currency],
+            'CardholderPresentCode' => "0",
+            'MotoInd' => "H",
+            'Description' => "",
+            'OriginalRetrefNum' => $this->getTransactionId(),
+            'CepBank' => array(
+                'GSMNumber' => $this->getCard()->getBillingPhone(),
+                'CepBank' => ""
+            ),
+            'PaymentType' => "K" // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
+        );
 
         return $data;
     }

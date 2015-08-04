@@ -13,10 +13,25 @@ class AuthorizeRequest extends PurchaseRequest {
 
     public function getData() {
 
-        $this->validate('orderid');
+        $this->validate('amount', 'card');
+        $this->getCard()->validate();
+        $currency = $this->getCurrency();
 
-        $data['Type'] = $this->getType();
-        $data['OrderId'] = $this->getOrderId();
+        $data['Transaction'] = array(
+            'Type' => 'postauth',
+            'InstallmentCnt' => $this->getInstallment(),
+            'Amount' => $this->getAmountInteger(),
+            'CurrencyCode' => $this->currencies[$currency],
+            'CardholderPresentCode' => "0",
+            'MotoInd' => "H",
+            'Description' => "",
+            'OriginalRetrefNum' => $this->getTransactionId(),
+            'CepBank' => array(
+                'GSMNumber' => $this->getCard()->getBillingPhone(),
+                'CepBank' => ""
+            ),
+            'PaymentType' => "K" // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
+        );
 
         return $data;
     }

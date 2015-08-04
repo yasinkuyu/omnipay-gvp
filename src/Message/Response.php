@@ -2,10 +2,10 @@
 
 namespace Omnipay\Gvp\Message;
 
-use Omnipay\Common\Message\AbstractResponse;
-use Omnipay\Common\Message\RequestInterface;
-use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\Common\Message\AbstractResponse;
+use Omnipay\Common\Message\RedirectResponseInterface;
+use Omnipay\Common\Message\RequestInterface;
 
 /**
  * Gvp Response
@@ -34,33 +34,26 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
 
     /**
      * Whether or not response is successful
-     *
-     * @return bool
+     * @return boolean
      */
     public function isSuccessful() {
-        if (isset($this->data["ProcReturnCode"])) {
-            return (string) $this->data["ProcReturnCode"] === '00' || $this->data["Response"] === 'Approved';
-        } else {
-            return false;
-        }
+        return (string) $this->data["Transaction"]->Response->Code === '00';
     }
 
     /**
      * Get is redirect
-     *
-     * @return bool
+     * @return boolean
      */
     public function isRedirect() {
         return false; //todo
     }
 
     /**
-     * Get a code describing the status of this response.
-     *
-     * @return string|null code
+     * Get a code describing the status of this response
+     * @return string
      */
     public function getCode() {
-        return $this->isSuccessful() ? $this->data["AuthCode"] : parent::getCode();
+        return $this->isSuccessful() ? $this->data["Transaction"]->Response->ReasonCode : parent::getCode();
     }
 
     /**
@@ -70,7 +63,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
      */
     public function getTransactionReference() {
 
-        return $this->isSuccessful() ? $this->data["TransId"] : '';
+        return $this->isSuccessful() ? $this->data["Transaction"]->Response->RetrefNum : '';
     }
 
     /**
@@ -80,15 +73,19 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
      */
     public function getMessage() {
         if ($this->isSuccessful()) {
-            $moneyPoints = $this->data["Extra"]->KULLANILABILIRBONUS;
-            if (!empty($moneyPoints))
-                return (string) $this->data["Response"] . '. Available money points : ' . $moneyPoints;
-            else
-                return $this->data["Response"];
+            return $this->data["Transaction"]->Response->Message;
         }
-        return $this->data["ErrMsg"];
     }
-
+    
+    /**
+     * Get message
+     *
+     * @return string
+     */
+    public function getError() {
+        return $this->data["Transaction"]->Response->ErrorMsg . " / " . $this->data["Transaction"]->Response->SysErrMsg;
+    }
+    
     /**
      * Get Redirect url
      *
@@ -97,7 +94,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
     public function getRedirectUrl() {
         if ($this->isRedirect()) {
             $data = array(
-                'TransId' => $this->data["TransId"]
+                'TransId' => $this->data["Transaction"]->RetrefNum
             );
             return $this->getRequest()->getEndpoint() . '/test/index?' . http_build_query($data);
         }

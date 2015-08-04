@@ -37,35 +37,19 @@ class PurchaseRequest extends AbstractRequest {
         $currency = $this->getCurrency();
 
         $data['Transaction'] = array(
-            'Type' => $this->getType(),
+            'Type' => 'preauth',
             'InstallmentCnt' => $this->getInstallment(),
             'Amount' => $this->getAmountInteger(),
             'CurrencyCode' => $this->currencies[$currency],
             'CardholderPresentCode' => "0",
             'MotoInd' => "N",
             'Description' => "",
-            'OriginalRetrefNum' => "",
+            'OriginalRetrefNum' => $this->getTransactionId(),
             'CepBank' => array(
                 'GSMNumber' => $this->getCard()->getBillingPhone(),
                 'CepBank' => ""
             ),
             'PaymentType' => "K" // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
-        );
-
-        $data['Card'] = array(
-            'Number' => $this->getCard()->getNumber(),
-            'ExpireDate' => $this->getCard()->getExpiryDate('my'),
-            'CVV2' => $this->getCard()->getCvv()
-        );
-
-        $data['Order'] = array(
-            'OrderID' => $this->getOrderId(),
-            'GroupID' => ""
-        );
-
-        $data['Customer'] = array(
-            'IPAddress' =>  '127.0.0.1', //$this->getClientIp(),
-            'EmailAddress' => $this->getCard()->getEmail()
         );
 
         return $data;
@@ -83,6 +67,22 @@ class PurchaseRequest extends AbstractRequest {
             'UserID' => $this->getUserName(),
             'ID' => $this->getTerminalId(),
             'MerchantID' => $this->getMerchantId(),
+        );
+
+        $data['Card'] = array(
+            'Number' => $this->getCard()->getNumber(),
+            'ExpireDate' => $this->getCard()->getExpiryDate('my'),
+            'CVV2' => $this->getCard()->getCvv()
+        );
+
+        $data['Order'] = array(
+            'OrderID' => $this->getOrderId(),
+            'GroupID' => ""
+        );
+
+        $data['Customer'] = array(
+            'IPAddress' =>  '127.0.0.1', //$this->getClientIp(),
+            'EmailAddress' => $this->getCard()->getEmail()
         );
 
         // Build api post url

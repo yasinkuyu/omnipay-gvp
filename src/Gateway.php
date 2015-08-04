@@ -26,7 +26,8 @@ class Gateway extends AbstractGateway {
             'refundusername' => 'PROVRFN',
             'refundpassword' => '123qweASD',
             'installment' => '',
-            'type' => 'PROD',
+            'mode' => 'TEST',
+            'type' => 'preauth',
             'currency' => 'TRY'
         );
     }
@@ -99,6 +100,14 @@ class Gateway extends AbstractGateway {
         return $this->setParameter('refundpassword', $value);
     }
 
+    public function getSecurekey() {
+        return $this->getParameter('securekey');
+    }
+
+    public function setSecurekey($value) {
+        return $this->setParameter('securekey', $value);
+    }
+    
     public function getInstallment() {
         return $this->getParameter('installment');
     }
