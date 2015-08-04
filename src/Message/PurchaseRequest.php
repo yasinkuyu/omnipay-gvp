@@ -108,13 +108,6 @@ class PurchaseRequest extends AbstractRequest {
         return $this->response = new Response($this, $httpResponse->getBody());
     }
 
-    /**
-     * returns security hash for using in transaction hash.
-     *
-     * @param string $password
-     *
-     * @return string
-     */
     private function getSecurityHash($password)
     {
         $tidPrefix  = str_repeat('0', 9 - strlen($this->getTerminalId()));
@@ -122,15 +115,6 @@ class PurchaseRequest extends AbstractRequest {
         return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
     }
     
-    /**
-     * returns transaction hash for using in transaction request.
-     *
-     * @param Request $request
-     * @param string  $password
-     * @param string $transactionType
-     *
-     * @return string
-     */
     private function getTransactionHash($password)
     {
         return strtoupper(
