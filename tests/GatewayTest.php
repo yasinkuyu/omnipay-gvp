@@ -19,10 +19,11 @@ class GatewayTest extends GatewayTestCase
         $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
 
         $this->options = array(
-            'bank' => 'denizbank',
-            'name' => 'DENIZTEST',
-            'clientId' => '800100000',
-            'password' => 'DENIZTEST123',
+            'merchantId' => 'XXXXXXXXX',
+            'terminalId' => '0XXXXXXXX',
+            'provUserId' => '123',
+            'provPass' => '123',
+            'userId' => 'XXXXXX',
             'amount' => 10.00,
             'currency' => 'TRY',
             'returnUrl' => 'http://sanalmagaza.org/return',
