@@ -81,7 +81,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
     }
     
     /**
-     * Get message
+     * Get error
      *
      * @return string
      */
