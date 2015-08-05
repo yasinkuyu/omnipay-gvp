@@ -2,6 +2,7 @@
 
 **Gvp (Garanti, Denizbank, TEB, ING, Şekerbank, TFKB sanal pos) gateway for Omnipay payment processing library**
 
+
 [![Latest Stable Version](https://poser.pugx.org/yasinkuyu/omnipay-gvp/v/stable)](https://packagist.org/packages/yasinkuyu/omnipay-gvp) 
 [![Total Downloads](https://poser.pugx.org/yasinkuyu/omnipay-gvp/downloads)](https://packagist.org/packages/yasinkuyu/omnipay-gvp) 
 [![Latest Unstable Version](https://poser.pugx.org/yasinkuyu/omnipay-gvp/v/unstable)](https://packagist.org/packages/yasinkuyu/omnipay-gvp) 
@@ -140,9 +141,9 @@ PHPUnit is a programmer-oriented testing framework for PHP. It is an instance of
                 if ($response->isSuccessful()) {
                     //echo $response->getTransactionReference();
                     echo $response->getMessage();
-                }else{
+                } else {
                     echo $response->getError();
-                } 
+                }
 
                 // Debug
                 //var_dump($response);
