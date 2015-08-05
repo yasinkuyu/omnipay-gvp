@@ -17,10 +17,10 @@ use Omnipay\Common\Message\RequestInterface;
 class Response extends AbstractResponse implements RedirectResponseInterface {
 
     /**
-     * Constructor
-     *
-     * @param  RequestInterface         $request
-     * @param  string                   $data / response data
+     * construct
+     * 
+     * @param RequestInterface $request
+     * @param type $data
      * @throws InvalidResponseException
      */
     public function __construct(RequestInterface $request, $data) {
@@ -34,6 +34,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
 
     /**
      * Whether or not response is successful
+     * 
      * @return boolean
      */
     public function isSuccessful() {
@@ -42,6 +43,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
 
     /**
      * Get is redirect
+     * 
      * @return boolean
      */
     public function isRedirect() {
@@ -50,10 +52,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface {
 
     /**
      * Get a code describing the status of this response
+     * 
      * @return string
      */
     public function getCode() {
-        return $this->isSuccessful() ? $this->data["Transaction"]->Response->ReasonCode : parent::getCode();
+        return $this->isSuccessful() ? $this->data["Transaction"]->Response->ReasonCode : parent::getCode(); //$this->data["Transaction"]->AuthCode
     }
 
     /**
