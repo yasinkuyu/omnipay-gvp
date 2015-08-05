@@ -59,7 +59,98 @@ repository.
 PHPUnit is a programmer-oriented testing framework for PHP. It is an instance of the xUnit architecture for unit testing frameworks.
 
 ## Sample App
-   
+
+        <?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+        use Omnipay\Omnipay;
+
+        class GvpTest extends CI_Controller {
+
+            public function index() {
+                $gateway = Omnipay::create('Gvp');
+
+                $gateway->setMerchantId("7000679");
+                $gateway->setTerminalId("30691297");
+
+                $gateway->setUserName("PROVAUT");
+                $gateway->setPassword("123qweASD");
+
+                $gateway->setRefundUserName("PROVRFN");
+                $gateway->setRefundPassword("123qweASD");
+
+                $gateway->setTestMode(TRUE);
+
+                $options = [
+                    'number'        => '4824894728063019',
+                    'expiryMonth'   => '06',
+                    'expiryYear'    => '2017',
+                    'cvv'           => '959',
+                    'fistname'      => 'Yasin',
+                    'lastname'      => 'Kuyu'
+                ];
+
+                $response = $gateway->purchase(
+                [
+                    //'installment'  => '2', # Taksit
+                    //'multiplepoint' => 1, // Set money points (Maxi puan gir)
+                    //'extrapoint'   => 150, // Set money points (Maxi puan gir)
+                    'amount'        => 100.00,
+                    'orderid'       => '',
+                    'card'          => $options
+                ]
+                )->send();
+
+                $response = $gateway->authorize(
+                [
+                    'orderid'       => 'asd2',
+                    'transactionId' => '111111111111',
+                    'amount'        => 10.00,
+                    'card'          => $options
+                ]
+                )->send();
+        //
+                $response = $gateway->capture(
+                [
+                    'transactionId' => '111111111111',
+                    'amount'        => 1.00,
+                    'currency'      => 'TRY',
+                    'card'          => $options
+                ]
+                )->send();
+
+                $response = $gateway->refund(
+                [
+                    'transactionId' => '111111111111',
+                    'amount'        => 1.00,
+                    'currency'      => 'TRY',
+                    'card'          => $options
+                ]
+                )->send();
+
+                $response = $gateway->void(
+                [
+                    'transactionId' => '111111111111',
+                    'authcode'      => '123123',
+                    'amount'        => 1.00,
+                    'currency'      => 'TRY',
+                    'card'          => $options
+                ]
+                )->send();
+
+                if ($response->isSuccessful()) {
+                    //echo $response->getTransactionReference();
+                    echo $response->getMessage();
+                }else{
+                    echo $response->getError();
+                } 
+
+                // Debug
+                //var_dump($response);
+
+            }
+
+        }
+
 
 ## Support
 
