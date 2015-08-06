@@ -9,7 +9,7 @@
 [![License](https://poser.pugx.org/yasinkuyu/omnipay-gvp/license)](https://packagist.org/packages/yasinkuyu/omnipay-gvp)
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements Gvp (Turkey Payment Gateways) support for Omnipay.
+processing library for PHP 5.3+. This package implements Gvp (Turkish Payment Gateways) support for Omnipay.
 
 
 Gvp (Garanti, Denizbank, TEB, ING, Şekerbank, TFKB) sanal pos hizmeti için omnipay kütüphanesi.

@@ -26,9 +26,9 @@ class Gateway extends AbstractGateway {
             'refundusername' => 'PROVRFN',
             'refundpassword' => '123qweASD',
             'installment' => '',
-            'mode' => 'TEST',
             'type' => 'preauth',
-            'currency' => 'TRY'
+            'currency' => 'TRY',
+            'testMode' => false
         );
     }
 
