@@ -144,14 +144,11 @@ class PurchaseRequest extends AbstractRequest {
     private function getTransactionHash($password) {
         return strtoupper(
                 sha1(
-                        sprintf(
-                                '%s%s%s%s%s', 
-                                $this->getOrderId(), 
-                                $this->getTerminalId(), 
-                                $this->getCard()->getNumber(), 
-                                $this->getAmountInteger(), 
-                                $this->getSecurityHash($password)
-                        )
+                    $this->getOrderId(), 
+                    $this->getTerminalId(), 
+                    $this->getCard()->getNumber(), 
+                    $this->getAmountInteger(), 
+                    $this->getSecurityHash($password)
                 )
         );
     }
