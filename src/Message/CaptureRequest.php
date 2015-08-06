@@ -11,29 +11,6 @@ namespace Omnipay\Gvp\Message;
  */
 class CaptureRequest extends PurchaseRequest {
 
-    public function getData() {
-
-        $this->validate('card');
-        $this->getCard()->validate();
-        $currency = $this->getCurrency();
-
-        $data['Transaction'] = array(
-            'Type' => 'sales',
-            'InstallmentCnt' => $this->getInstallment(),
-            'Amount' => $this->getAmountInteger(),
-            'CurrencyCode' => $this->currencies[$currency],
-            'CardholderPresentCode' => "0",
-            'MotoInd' => "H",
-            'Description' => "",
-            'OriginalRetrefNum' => $this->getTransactionId(),
-            'CepBank' => array(
-                'GSMNumber' => $this->getCard()->getBillingPhone(),
-                'CepBank' => ""
-            ),
-            'PaymentType' => "K" // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
-        );
-
-        return $data;
-    }
+    protected $actionType = 'sales';
 
 }

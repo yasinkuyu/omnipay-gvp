@@ -14,6 +14,7 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class PurchaseRequest extends AbstractRequest {
 
+    protected $actionType = 'preauth';
     protected $endpoint = '';
     protected $endpoints = [
         'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',
@@ -37,7 +38,7 @@ class PurchaseRequest extends AbstractRequest {
         $currency = $this->getCurrency();
 
         $data['Transaction'] = array(
-            'Type' => 'preauth',
+            'Type' => $this->actionType,
             'InstallmentCnt' => $this->getInstallment(),
             'Amount' => $this->getAmountInteger(),
             'CurrencyCode' => $this->currencies[$currency],
