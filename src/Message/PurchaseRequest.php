@@ -138,8 +138,8 @@ class PurchaseRequest extends AbstractRequest {
 
     /**
      * 
-     * @param type $password
-     * @return type
+     * @param string $password
+     * @return string
      */
     private function getTransactionHash($password) {
         return strtoupper(
