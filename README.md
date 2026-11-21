@@ -171,6 +171,18 @@ composer install
 vendor/bin/phpunit
 ```
 
+## Diğer Omnipay paketleri
+
+Aynı geliştiricinin diğer Omnipay sürücüleri:
+
+- **[Omnipay: NestPay (EST / Payten)](https://github.com/yasinkuyu/omnipay-nestpay)** — İş Bankası, Akbank, Halkbank, Ziraat, TEB, QNB, ING, Şekerbank, Anadolubank sanal POS'u; 3D Pay Hosting
+- **[Omnipay: Paratika](https://github.com/yasinkuyu/omnipay-paratika)** — Paratika, VakıfPayS ve ZiraatPay ortak ödeme sayfası
+- **[Omnipay: Paycell SDK](https://github.com/yasinkuyu/omnipay-paycell-sdk)** — Turkcell Paycell ödeme sayfası (Web SDK)
+- **[Omnipay: Paycell API](https://github.com/yasinkuyu/omnipay-paycell)** — Turkcell Paycell ödeme API'si
+- **[Omnipay: iyzico](https://github.com/yasinkuyu/omnipay-iyzico)** — iyzico ödeme formu
+- **[Omnipay: PayTR](https://github.com/yasinkuyu/omnipay-paytr)** — PayTR sanal POS
+- **[Omnipay: Posnet](https://github.com/yasinkuyu/omnipay-posnet)** — Yapı Kredi Posnet sanal POS'u
+
 ## Lisans
 
 MIT — [Yasin Kuyu](https://github.com/yasinkuyu)
